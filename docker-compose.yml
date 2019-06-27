@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  consul:
+    image: consul:latest
+    hostname: consul
+    command: agent -dev -client 0.0.0.0 -bootstrap-expect=1
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:53/udp"
+
+  vault:
+    image: vault
+    hostname: vault
+    depends_on:
+      - consul
+    links:
+      - consul:consul
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_ADDR: http://127.0.0.1:8200
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./src/just-loiter.sh:/just-loiter.sh:z
+      - ./config/vault:/config:z
+      - ./config/vault/policies:/policies:z
+    entrypoint: /just-loiter.sh -t 20 -h consul -p 8500 -s -- vault server -config=/config/with-consul.hcl
