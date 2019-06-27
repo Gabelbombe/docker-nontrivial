@@ -308,7 +308,7 @@ let's look at it:
 
 ```bash
 $ echo $token
-141ad3d2-2035-9d7b-c284-ce119f39fc5d
+s.BQK9xRYUDnHsgJ7quUBWzUuZ
 ```
 
 looks like any other token, but it is in fact a _one time use_ token, only for this cobbyhole.
