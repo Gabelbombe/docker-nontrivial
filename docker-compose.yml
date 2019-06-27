@@ -25,7 +25,7 @@ services:
       - consul
     cap_add:
       - IPC_LOCK
-    command: server -config=/config/vault.hcl
+    command: server -config=config/vault.hcl
 
   webui:
     container_name: webui
