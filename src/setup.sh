@@ -1,17 +1,14 @@
-#!/bin/ash
+#!/bin/bash
 
 ## CONFIG LOCAL ENV
 echo "[*] Config local environment..."
 alias vault='docker-compose exec vault vault "$@"'
 export VAULT_ADDR=http://127.0.0.1:8200
 
-[ ! -d '_data' ]          && mkdir -p _data
-[ ! -f '_data/keys.txt' ] && touch    _data/keys.txt
-
 ## INIT VAULT
 echo "[*] Init vault..."
 vault operator init -address=${VAULT_ADDR} 2>&1 >| _data/keys.txt
-export VAULT_TOKEN=$(grep 'Initial Root Token:' _data/keys.txt |awk '{print substr($NF, 1, length($NF)-1)}')
+export VAULT_TOKEN=$(grep 'Initial Root Token:'    _data/keys.txt |awk '{print $NF}')
 
 ## UNSEAL VAULT
 echo "[*] Unseal vault..."
@@ -27,7 +24,7 @@ vault login -address=${VAULT_ADDR} ${VAULT_TOKEN}
 echo "[*] Create user... Remember to change the defaults!!"
 vault auth enable  -address=${VAULT_ADDR} userpass
 vault policy write -address=${VAULT_ADDR} admin config/admin.hcl
-vault write -address=${VAULT_ADDR} auth/userpass/users/webui password=webui policies=admin
+vault write        -address=${VAULT_ADDR} auth/userpass/users/webui password=webui policies=admin
 
 ## CREATE BACKUP TOKEN
 echo "[*] Create backup token..."
@@ -37,6 +34,6 @@ vault token create -address=${VAULT_ADDR} -display-name="backup_token" |awk '/to
 
 ## MOUNTS
 echo "[*] Creating new mount point..."
-vault mounts -address=${VAULT_ADDR}
-vault mount  -address=${VAULT_ADDR} -path=assessment -description="Secrets used in the assessment" generic
-vault write  -address=${VAULT_ADDR} assessment/server1_ad value1=name value2=pwd
+vault secrets list    -address=${VAULT_ADDR}
+vault secrets enable  -address=${VAULT_ADDR} -path=assessment -description="Secrets used in the assessment" generic
+vault write           -address=${VAULT_ADDR} assessment/server1_ad value1=name value2=pwd
