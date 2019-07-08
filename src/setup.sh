@@ -12,8 +12,8 @@ export VAULT_TOKEN=$(grep 'Initial Root Token:'    _data/keys.txt |awk '{print $
 
 ## UNSEAL VAULT
 echo "[*] Unseal vault..."
-vault operator unseal -address=${VAULT_ADDR} $(grep 'Key 1:' _data/keys.txt |awk '{print $NF}')
-vault operator unseal -address=${VAULT_ADDR} $(grep 'Key 2:' _data/keys.txt |awk '{print $NF}')
+vault operator unseal -address=${VAULT_ADDR} $(grep 'Key 1:' _data/keys.txt |awk '{print $NF}') ; echo
+vault operator unseal -address=${VAULT_ADDR} $(grep 'Key 2:' _data/keys.txt |awk '{print $NF}') ; echo
 vault operator unseal -address=${VAULT_ADDR} $(grep 'Key 3:' _data/keys.txt |awk '{print $NF}')
 
 ## AUTH
