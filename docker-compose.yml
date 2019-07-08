@@ -23,6 +23,8 @@ services:
       - '8200:8200'
     volumes_from:
       - consul
+    environment:
+      VAULT_UI: 1
     cap_add:
       - IPC_LOCK
     command: server -config=config/vault.hcl
@@ -36,7 +38,8 @@ services:
       - vault:vault
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      VAULT_URL_DEFAULT: https://vault:8200
+      VAULT_URL_DEFAULT: http://vault:8200
+      VAULT_AUTH_DEFAULT: USERNAMEPASSWORD
 
   backup:
     container_name: backup
@@ -45,4 +48,4 @@ services:
       - consul:consul
     volumes:
       - ./_data/backup:/backup/
-    command: consul-backup
+    command: consul-backup --version
