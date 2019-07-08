@@ -48,4 +48,4 @@ services:
       - consul:consul
     volumes:
       - ./_data/backup:/backup/
-    command: consul-backup --version
+    command: sleep infinity
